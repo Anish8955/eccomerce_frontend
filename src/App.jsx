@@ -18,6 +18,9 @@ import { default as ShowBrands } from "./Components/admin/brand/Show";
 import { default as CreateBrand} from "./Components/admin/brand/Create";
 import { default as EditBrand } from "./Components/admin/brand/Edit";
 
+import { default as ShowProducts } from "./Components/admin/product/Show";
+import { default as CreateProduct} from "./Components/admin/product/Create";
+import { default as EditProduct } from "./Components/admin/product/Edit";
 
 
 function App() {
@@ -90,6 +93,33 @@ function App() {
             element={
               <AdminRequireAuth>
                 <EditBrand />
+              </AdminRequireAuth>
+            }
+          />
+
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRequireAuth>
+                <ShowProducts />
+              </AdminRequireAuth>
+            }
+          />
+
+          <Route
+            path="/admin/products/create"
+            element={
+              <AdminRequireAuth>
+                <CreateProduct />
+              </AdminRequireAuth>
+            }
+          />
+
+          <Route
+            path="/admin/products/edit/:id"
+            element={
+              <AdminRequireAuth>
+                <EditProduct />
               </AdminRequireAuth>
             }
           />
