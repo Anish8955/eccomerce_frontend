@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 
 const Edit = () => {
 
-   const [disable, setDisable] = useState(false);
-   const [category, setCategory] = useState([]);
+  const [disable, setDisable] = useState(false);
+   const [brand, setBrand] = useState([]);
   const navigate = useNavigate();
     const params = useParams();
 
@@ -22,7 +22,7 @@ const Edit = () => {
     formState: { errors },
   } = useForm( {
         defaultValues : async () =>{
-            const response = await fetch(`${apiUrl}/categories/${params.id}`, {
+            const response = await fetch(`${apiUrl}/brands/${params.id}`, {
                     method: "GET",
                     headers: {
                       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ const Edit = () => {
                 
             
                   if (result.status === 200) {
-                     setCategory(result.data);
+                     setBrand(result.data);
                      reset({
                         name: result.data.name,
                         status: result.data.status
@@ -49,11 +49,11 @@ const Edit = () => {
     }
   );
 
-  const saveCategory = async (data) => {
+  const saveBrand = async (data) => {
     setDisable(true);
 
     try {
-      const response = await fetch(`${apiUrl}/categories/${params.id}`, {
+      const response = await fetch(`${apiUrl}/brands/${params.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -68,8 +68,8 @@ const Edit = () => {
       setDisable(false);
 
       if (result.status === 200) {
-        toast.success(result.message || "Category Updated successfully!"); // ✅ show message
-        navigate("/admin/categories");
+        toast.success(result.message || "Brand Updated successfully!"); // ✅ show message
+        navigate("/admin/brands");
       } else {
         toast.error(result.message || "Something went wrong."); // optional error feedback
       }
@@ -85,15 +85,15 @@ const Edit = () => {
       <div className="container">
         <div className="row">
           <div className="d-flex justify-content-between mt-5 pb-3">
-            <h4 className="h4 pb-0 mb-0">Category / Edit</h4>
-            <Link to="/admin/categories" className="btn btn-primary">Back</Link>
+            <h4 className="h4 pb-0 mb-0">Brand / Edit</h4>
+            <Link to="/admin/brands" className="btn btn-primary">Back</Link>
           </div>
           <div className="col-md-3">
             <Sidebar />
           </div>
           <div className="col-md-9">
             
-         <form onSubmit={handleSubmit(saveCategory)}>
+         <form onSubmit={handleSubmit(saveBrand)}>
               <div className="card shadow">
                 <div className="card-body p-4">
                   <div className="mb-3">
@@ -137,7 +137,7 @@ const Edit = () => {
                 </div>
               </div>
               <button disabled={disable} className="btn btn-primary mt-3">
-                Update Category
+                Update Brand
               </button>
             </form>
                
