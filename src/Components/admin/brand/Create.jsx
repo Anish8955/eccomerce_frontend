@@ -1,60 +1,31 @@
-import Sidebar from '../../common/Sidebar'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
+import Layout from "../../common/Layout";
+import Sidebar from "../../common/Sidebar";
+import { set, useForm } from "react-hook-form";
+import { useState } from "react";
 import { adminToken, apiUrl } from "../../common/Http";
-import Layout from '../../common/Layout'
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { toast } from "react-toastify";
 
 
-const Edit = () => {
+const Create = () => {
 
-   const [disable, setDisable] = useState(false);
-   const [category, setCategory] = useState([]);
+
+  const [disable, setDisable] = useState(false);
   const navigate = useNavigate();
-    const params = useParams();
 
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors },
-  } = useForm( {
-        defaultValues : async () =>{
-            const response = await fetch(`${apiUrl}/categories/${params.id}`, {
-                    method: "GET",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Accept: "application/json",
-                      Authorization: `Bearer ${adminToken()}`,
-                    },
-                    
-                  });
-            
-                  const result = await response.json(); 
-            
-                
-            
-                  if (result.status === 200) {
-                     setCategory(result.data);
-                     reset({
-                        name: result.data.name,
-                        status: result.data.status
-                     })
-                  } else {
-                    toast.error(result.message || "Something went wrong."); // optional error feedback
-                  }
-        }
-    }
-  );
+  } = useForm();
 
-  const saveCategory = async (data) => {
+  const saveBrand = async (data) => {
     setDisable(true);
 
     try {
-      const response = await fetch(`${apiUrl}/categories/${params.id}`, {
-        method: "PUT",
+      const response = await fetch(`${apiUrl}/brands`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -68,8 +39,8 @@ const Edit = () => {
       setDisable(false);
 
       if (result.status === 200) {
-        toast.success(result.message || "Category Updated successfully!"); // ✅ show message
-        navigate("/admin/categories");
+        toast.success(result.message || "Brand created successfully!"); // ✅ show message
+        navigate("/admin/brands");
       } else {
         toast.error(result.message || "Something went wrong."); // optional error feedback
       }
@@ -81,19 +52,20 @@ const Edit = () => {
   };
 
   return (
-    <Layout>
+      <Layout>
       <div className="container">
         <div className="row">
           <div className="d-flex justify-content-between mt-5 pb-3">
-            <h4 className="h4 pb-0 mb-0">Category / Edit</h4>
-            <Link to="/admin/categories" className="btn btn-primary">Back</Link>
+            <h4 className="h4 pb-0 mb-0">Brands / Create</h4>
+            <Link to="/admin/brands" className="btn btn-primary">
+              List
+            </Link>
           </div>
           <div className="col-md-3">
             <Sidebar />
           </div>
           <div className="col-md-9">
-            
-         <form onSubmit={handleSubmit(saveCategory)}>
+            <form onSubmit={handleSubmit(saveBrand)}>
               <div className="card shadow">
                 <div className="card-body p-4">
                   <div className="mb-3">
@@ -137,10 +109,9 @@ const Edit = () => {
                 </div>
               </div>
               <button disabled={disable} className="btn btn-primary mt-3">
-                Update Category
+                Add Brand
               </button>
             </form>
-               
           </div>
         </div>
       </div>
@@ -148,4 +119,4 @@ const Edit = () => {
   )
 }
 
-export default Edit
+export default Create
