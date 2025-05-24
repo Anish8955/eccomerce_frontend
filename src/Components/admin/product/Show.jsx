@@ -1,4 +1,3 @@
-
 import { data, Link } from "react-router-dom";
 import Layout from "../../common/Layout";
 import Sidebar from "../../common/Sidebar";
@@ -6,11 +5,10 @@ import { adminToken, apiUrl } from "../../common/Http";
 import { useEffect, useState } from "react";
 import Loader from "../../common/Loader";
 import Nostate from "../../common/Nostate";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 
 const Show = () => {
-
- const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loader, setLoader] = useState(false);
 
   const fetchProducts = async () => {
@@ -34,25 +32,53 @@ const Show = () => {
       });
   };
 
-   useEffect(() => {
+  const deleteProduct = async (id) => {
+    if(confirm("Are you sure want to delete this product")){
+        const res = await fetch(`${apiUrl}/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${adminToken()}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+       
+           if(result.status == 200){
+           const newProducts =  products.filter(product => product.id != id  )
+           setProducts(newProducts);
+              toast.success(result.message);
+           }else{
+              toast.error(result.message);
+              
+           }
+
+      });
+    }
+   
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
-
   return (
-       <Layout>
+    <Layout>
       <div className="container">
         <div className="row">
           <div className="d-flex justify-content-between mt-5 pb-3">
             <h4 className="h4 pb-0 mb-0">Products</h4>
-            <Link to="/admin/products/create" className="btn btn-primary">Create</Link>
+            <Link to="/admin/products/create" className="btn btn-primary">
+              Create
+            </Link>
           </div>
           <div className="col-md-3">
-            <Sidebar/>
+            <Sidebar />
           </div>
           <div className="col-md-9">
             <div className="card shadow">
-                 <div className="card-body p-4">
+              <div className="card-body p-4">
                 {loader == true && <Loader />}
 
                 {loader == false && products.length == 0 && (
@@ -79,17 +105,21 @@ const Show = () => {
                           <tr key={product.id}>
                             <td>{product.id}</td>
                             <td>
-                              {
-                                (product.image_url  == "") ? <img src="https://placehold.co/50x50" /> :  <img src={product.image_url} width={50} />
-                              }
-                                
-                               
-
+                              <img
+                                src={
+                                  product.image_url === ""
+                                    ? "https://placehold.co/"
+                                    : product.image_url
+                                }
+                                width={50}
+                                height={50}
+                                alt="Product"
+                              />
                             </td>
                             <td>{product.title}</td>
                             <td>{product.price}</td>
                             <td>{product.qty}</td>
-                            <td>{product.sku}</td> 
+                            <td>{product.sku}</td>
                             <td>
                               {product.status == 1 ? (
                                 <span className="badge text-bg-success">
@@ -146,7 +176,7 @@ const Show = () => {
         </div>
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Show
+export default Show;
