@@ -9,6 +9,7 @@ import { adminToken, apiUrl } from "../../common/Http";
 import { toast } from "react-toastify";
 
 const Create = ({ placeholder }) => {
+  
   const [disable, setDisable] = useState(false);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -17,6 +18,9 @@ const Create = ({ placeholder }) => {
   const [content, setContent] = useState("");
   const [gallery, setGallery] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [sizesChecked, setSizesChecked] = useState([]);
+  
 
   const config = useMemo(
     () => ({
@@ -106,15 +110,30 @@ const Create = ({ placeholder }) => {
       });
   };
 
+    const fetchSizes  = async () => {
+    const res = await fetch(`${apiUrl}/sizes`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${adminToken()}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setSizes(result.data);
+      });
+  };
 
-  const handleFile = async(e) =>{
+
+  const handleFile= async(e) =>{
     const formData = new FormData();
     const file = e.target.files[0];
     formData.append("image",file);
     setDisable(true);
 
      const res = await fetch(`${apiUrl}/temp-images`, {
-      method: "Post",
+      method: "POST",
       headers: {
         'Accept': "application/json",
         'Authorization': `Bearer ${adminToken()}`,
@@ -136,13 +155,16 @@ const Create = ({ placeholder }) => {
   }
 
   const deleteImage = (image) =>{
+     if(confirm("Are you sure want to delete this picture")){
       const  newGallery =  galleryImages.filter(gallery => gallery != image)
       setGalleryImages(newGallery );
+     }
   }
 
   useEffect(() => {
     fetchCategories();
     fetchBrands();
+    fetchSizes();
   }, []);
 
   return (
@@ -398,14 +420,52 @@ const Create = ({ placeholder }) => {
                         errors.is_featured && "is-invalid"
                       }`}
                     >
-                      <option value="1">Yes</option>
-                      <option value="0">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
                     </select>
                     {errors.is_featured && (
                       <p className="invalid-feedback">
                         {errors.is_featured?.message}
                       </p>
                     )}
+                  </div>
+
+                  <h3 className="py-3 border-bottom mb-3">Sizes</h3>
+
+
+                  <div className="mb-3">
+                   
+                    {
+                     sizes &&
+                      sizes.map((size) => {
+                        return (
+                          <div className="form-check-inline ps-3" key={`psize-${size.id}`}>  
+                            <input
+                            {
+                              ...register("sizes")
+                            }
+                              checked={sizesChecked.includes(size.id)}
+                              onChange={(e) =>{
+                                if(e.target.checked){
+                                     setSizesChecked([...sizesChecked,size.id])
+                                }else{
+                                     setSizesChecked(sizesChecked.filter(sid =>size.id != sid))
+                                }
+                              }}
+                              className="form-check-input "
+                              type="checkbox"
+                              value={size.id}
+                              id={`size-{size.id}`}
+                            />
+                            <label
+                              className="form-check-label ps-2"
+                              htmlFor="{`size-{size.id}`}"
+                            >
+                              {size.name}
+                            </label>
+                          </div>
+                        );
+                      })}
                   </div>
 
                   <h3 className="py-3 border-bottom mb-3">Gallery</h3>
