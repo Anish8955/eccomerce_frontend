@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { set, useForm } from "react-hook-form";
 import { useState, useRef, useMemo } from "react";
 import JoditEditor from "jodit-react";
-import { adminToken, apiUrl } from "../../common/Http";
+import { adminToken, apiUrl } from "../../common/http";
 import { toast } from "react-toastify";
 
 const Edit = ({ placeholder }) => {
@@ -370,12 +370,12 @@ const Edit = ({ placeholder }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="" className="form-label">
-                          Discounted Price
+                         Compare Price
                         </label>
                         <input
                           {...register("compare_price")}
                           type="text"
-                          placeholder="Discounted Price"
+                          placeholder="Compare Price"
                           className="form-control"
                         />
                       </div>

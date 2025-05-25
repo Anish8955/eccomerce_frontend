@@ -3,9 +3,37 @@ import { Navbar, NavbarCollapse } from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
 import Logo from "../../assets/images/logo.png";
 import { Link } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { apiUrl } from "../common/http";
 
 const Header = () => {
+
+  const [categories, setCategories] = useState([]);
+
+
+const fetchCategories = () => {
+    fetch(`${apiUrl}/get-categories`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.status == 200) {
+          setCategories(result.data);
+        } else {
+          console.log("something went wrong");
+        }
+      });
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  
+  },[]); 
+
   return (
      <header className="shadow">
         <div className="bg-dark text-center py-2">
@@ -20,9 +48,14 @@ const Header = () => {
             <Navbar.Toggle aria-controls="navbarScroll" />
             <NavbarCollapse id="navbarScroll">
               <Nav className="ms-auto my-2 my-lg-0" navbarScroll>
-                <Nav.Link href="#action1">Mens</Nav.Link>
-                <Nav.Link href="#action2">Women</Nav.Link>
-                <Nav.Link href="#action3">Kids</Nav.Link>
+                {
+                  categories && categories.map(category =>{
+                      return(
+                        <Nav.Link href={`/shop?category=${category.id}`}>{category.name}</Nav.Link>
+                      )
+                  })
+                }
+                
               </Nav>
               <div className="nav-right d-flex">
                 <a href="" className="ms-3">
