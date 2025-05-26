@@ -13,14 +13,16 @@ import { AdminRequireAuth } from "./Components/admin/AdminRequireAuth";
 import { default as ShowCategories } from "./Components/admin/category/Show";
 import { default as CreateCategory} from "./Components/admin/category/Create";
 import { default as EditCategory } from "./Components/admin/category/Edit";
-
 import { default as ShowBrands } from "./Components/admin/brand/Show";
 import { default as CreateBrand} from "./Components/admin/brand/Create";
 import { default as EditBrand } from "./Components/admin/brand/Edit";
-
 import { default as ShowProducts } from "./Components/admin/product/Show";
 import { default as CreateProduct} from "./Components/admin/product/Create";
 import { default as EditProduct } from "./Components/admin/product/Edit";
+import Register from "./Components/Register";
+import { default as UserLogin } from "./Components/Login";
+import Profile from "./Components/Profile";
+import { RequireAuth } from "./Components/RequireAuth";
 
 
 function App() {
@@ -33,7 +35,22 @@ function App() {
           <Route path="/product/:id" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/account/register" element={<Register />} />
+          <Route path="/account/login" element={<UserLogin />} />
+        
+        
           <Route path="/admin/login" element={<Login />} />
+          
+    
+          <Route path="/account" element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            } />
+          
+
+
+
           <Route 
             path="/admin/dashboard"
             element={
