@@ -1,13 +1,16 @@
+import React, { useContext } from "react";
+import Layout from "./common/Layout";
 import { useForm } from "react-hook-form";
-import Layout from "../common/Layout";
-import { apiUrl } from "../common/http";
+import { Link, useNavigate } from "react-router-dom";
+import { apiUrl } from "./common/http";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AdminAuthContext } from "../context/AdminAuth";
+import { AuthContext } from "./context/Auth";
 
 const Login = () => {
-    const {login} = useContext(AdminAuthContext);
+
+    
+
+
   const {
     register,
     handleSubmit,
@@ -15,39 +18,39 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+   const {login} = useContext(AuthContext);
+
   const navigate = useNavigate();
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
+    const res = await fetch(`${apiUrl}/login`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.status == 200) {
 
-        const res = await fetch(`${apiUrl}/admin/login`,{
-            method: 'POST',
-            headers: {
-                'content-type' : 'application/json'
-            },
-            body : JSON.stringify(data)
-        }).then(res => res.json())
-        .then(result =>{
+          const userInfo = {
+            token: result.token,
+            id: result.id,
+            name: result.name,
+          };
 
-            if(result.status == 200){
+          localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
-                const adminInfo = {
-                    token: result.token,
-                    id: result.id,
-                    name: result.name
-                }
+          login(userInfo);
 
-                localStorage.setItem('adminInfo', JSON.stringify(adminInfo));
-
-                login(adminInfo);
-                
-                navigate('/admin/dashboard')
-
-            }else{
-                  toast.error(result.message);
-            }
-        })
-
-
+          navigate("/account");
+        } else {
+         
+         toast.error(result.message);
+        
+        }
+      });
   };
 
   return (
@@ -56,9 +59,10 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card shadow border-0 login">
             <div className="card-body p-4">
-              <h3>
-                <strong>Admin Login</strong>
+              <h3 className="border-bottom pb-2 mb-3">
+                <strong>Login</strong>
               </h3>
+
               <div className="mb-3">
                 <label htmlFor="" className="form-label">
                   Email
@@ -96,7 +100,10 @@ const Login = () => {
                   <p className="invalid-feedback">{errors.password?.message}</p>
                 )}
               </div>
-              <button className="btn btn-primary">Login</button>
+              <button className="btn btn-primary w-100">Login</button>
+              <div className="d-flex pt-4 pb-2 justify-content-center">
+                New User? &nbsp; <Link to="/account/register">Register</Link>
+              </div>
             </div>
           </div>
         </form>
