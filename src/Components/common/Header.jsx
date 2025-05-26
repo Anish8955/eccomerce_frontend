@@ -3,12 +3,15 @@ import { Navbar, NavbarCollapse } from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
 import Logo from "../../assets/images/logo.png";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { apiUrl } from "../common/http";
+import { CartContext } from "../context/Cart";
 
 const Header = () => {
 
   const [categories, setCategories] = useState([]);
+    const { getQty} = useContext(CartContext);
+  
 
 
 const fetchCategories = () => {
@@ -74,7 +77,8 @@ const fetchCategories = () => {
                 </a>
               </div>
               <div className="nav-right d-flex">
-                <Link to="/cart" className="ms-3">
+                <Link to="/cart" className="ms-3 cart-bucket">
+                <span>{getQty()}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
