@@ -1,6 +1,6 @@
 import Sidebar from '../../common/Sidebar'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { adminToken, apiUrl } from "../../common/Http";
+import { adminToken, apiUrl } from "../../common/http";
 import Layout from '../../common/Layout'
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';

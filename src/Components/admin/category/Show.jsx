@@ -1,7 +1,7 @@
 import { data, Link } from "react-router-dom";
 import Layout from "../../common/Layout";
 import Sidebar from "../../common/Sidebar";
-import { adminToken, apiUrl } from "../../common/Http";
+import { adminToken, apiUrl } from "../../common/http";
 import { useEffect, useState } from "react";
 import Loader from "../../common/Loader";
 import Nostate from "../../common/Nostate";

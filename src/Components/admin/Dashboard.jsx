@@ -1,7 +1,50 @@
+import { Link } from "react-router-dom";
 import Layout from "../common/Layout";
 import Sidebar from "../common/Sidebar";
+import { useEffect, useState } from "react";
+import { adminToken, apiUrl } from "../common/http";
 
 const Dashboard = () => {
+
+  const [totalProducts, setTotalProducts] = useState();
+  const [totalOrders, setTotalOrders] = useState();
+  
+
+     const fetchTotalProduct = async () => {
+        const res = await fetch(`${apiUrl}/total-product`, {
+          method: "GET",
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${adminToken()}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            setTotalProducts(result.total_active);
+          });
+      };
+
+      const fetchTotalOrder = async () => {
+        const res = await fetch(`${apiUrl}/total-order`, {
+          method: "GET",
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${adminToken()}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            setTotalOrders(result.total_orders);
+          });
+      };
+
+      useEffect(() => {
+        fetchTotalProduct();
+        fetchTotalOrder();
+      },[]);
+
   return (
     <Layout>
       <div className="container">
@@ -14,36 +57,26 @@ const Dashboard = () => {
           </div>
           <div className="col-md-9">
             <div className="row">
+              
               <div className="col-md-4">
                 <div className="card shadow ">
                   <div className="card-body">
-                    <h2>1</h2>
-                    <span>Users</span>
-                  </div>
-                  <div className="card-footer">
-                    <a href="#">View Users</a>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card shadow ">
-                  <div className="card-body">
-                    <h2>0</h2>
+                    <h2>{totalOrders}</h2>
                     <span>Orders</span>
                   </div>
                   <div className="card-footer">
-                    <a href="#">View Orders</a>
+                    <Link  to="/admin/orders">View Orders</Link>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="card shadow ">
                   <div className="card-body">
-                    <h2>12</h2>
+                    <h2>{totalProducts}</h2>
                     <span>Products</span>
                   </div>
                   <div className="card-footer">
-                    <a href="#">View Products</a>
+                    <Link to="/admin/products">View Products</Link>
                   </div>
                 </div>
               </div>
