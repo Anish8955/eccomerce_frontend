@@ -1,6 +1,36 @@
+import { Link, NavLink } from "react-router-dom";
 import LogoWhite from "../../assets/images/logo-white.png";
+import { useEffect, useState } from "react";
+import { apiUrl } from "../common/http";
+import Nav from "react-bootstrap/Nav";
 
 const Footer = () => {
+
+const [categories, setCategories] = useState([]);
+    
+const fetchCategories = () => {
+    fetch(`${apiUrl}/get-categories`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.status == 200) {
+          setCategories(result.data);
+        } else {
+          console.log("something went wrong");
+        }
+      });
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  
+  },[]); 
+
   return (
    <footer className="py-5 text-white">
         <div className="container">
@@ -8,33 +38,35 @@ const Footer = () => {
             <div className="col-md-3 pb-4">
               <img src={LogoWhite} alt="logo" width={150} />
               <div className="pt-3 pe-5">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                PureWear is an eco-friendly clothing brand offering stylish, sustainable fashion made from organic and natural fabrics. Discover comfortable, conscious apparel designed for modern living.
               </div>
             </div>
             <div className="col-md-3 pd-4">
               <h2 className="mb-3">Categories</h2>
               <ul>
-                <li>
-                  <a href="">Mens</a>
-                </li>
-
-                <li>
-                  <a href="">Women</a>
-                </li>
-                <li>
-                  <a href="">Kids</a>
-                </li>
-              </ul>
+              {
+                  categories && categories.map(category =>{
+                      return(
+                        <Nav.Link
+                        key={`cat-${category.id}`}
+                        href={`/shop?category=${category.id}`}>{category.name}</Nav.Link>
+                      )
+                  })
+                }
+                </ul>
+              
+               
+              
             </div>
             <div className="col-md-3 pb-4 ">
               <h2 className="mb-3">Quick Links</h2>
               <ul>
                 <li>
-                  <a href="">Login</a>
+                  <Link to="/account/login">Login</Link>
                 </li>
 
                 <li>
-                  <a href="">Register</a>
+                  <Link to="/account/register">Register</Link>
                 </li>
               </ul>
             </div>

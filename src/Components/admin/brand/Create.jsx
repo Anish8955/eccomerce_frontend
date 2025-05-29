@@ -3,7 +3,7 @@ import Layout from "../../common/Layout";
 import Sidebar from "../../common/Sidebar";
 import { set, useForm } from "react-hook-form";
 import { useState } from "react";
-import { adminToken, apiUrl } from "../../common/Http";
+import { adminToken, apiUrl } from "../../common/http";
 import { toast } from "react-toastify";
 
 
